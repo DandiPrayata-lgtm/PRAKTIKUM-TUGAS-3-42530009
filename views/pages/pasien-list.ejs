@@ -1,0 +1,54 @@
+<%- include('../partials/header', { pageTitle: pageTitle }) %>
+
+<div class="card">
+  <div class="bar">
+    <h2>Master Data Pasien</h2>
+    <a href="/pasien/tambah" class="btn">+ Tambah Pasien</a>
+  </div>
+
+  <form action="/pasien" method="GET" style="margin-bottom: 1rem;">
+    <input type="text" name="q" value="<%= keyword %>" placeholder="Cari nama pasien...">
+    <button type="submit">Cari</button>
+    <% if (keyword) { %><a href="/pasien">Reset</a><% } %>
+  </form>
+
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>No. RM</th>
+        <th>Nama Lengkap</th>
+        <th>JK</th>
+        <th>Tanggal Lahir</th>
+        <th>Telepon</th>
+        <th>Berat (kg)</th>
+        <th>Aksi</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if (pasienList.length === 0) { %>
+        <tr><td colspan="8" style="text-align: center;">Tidak ada data pasien.</td></tr>
+      <% } else { %>
+        <% pasienList.forEach(p => { %>
+          <tr>
+            <td><%= p.id %></td>
+            <td><%= p.no_rekam_medis %></td>
+            <td><strong><%= p.nama_lengkap %></strong><br><small><%= p.alamat %></small></td>
+            <td><%= p.jenis_kelamin %></td>
+            <td><%= new Date(p.tanggal_lahir).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }) %></td>
+            <td><%= p.no_telepon %></td>
+            <td><%= Number(p.berat_badan).toLocaleString('id-ID') %></td>
+            <td>
+              <a href="/pasien/edit/<%= p.id %>">Edit</a>
+              <form action="/pasien/hapus/<%= p.id %>" method="POST" class="inline" onsubmit="return confirm('Yakin ingin menghapus data pasien ini?');">
+                <button type="submit" class="hapus">Hapus</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      <% } %>
+    </tbody>
+  </table>
+</div>
+
+<%- include('../partials/footer') %>
